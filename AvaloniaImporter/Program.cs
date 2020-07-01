@@ -20,7 +20,6 @@ namespace AvaloniaImporter
             var settings = new XmlWriterSettings();
             settings.OmitXmlDeclaration = true;
             settings.Indent = true;
-            settings.NewLineOnAttributes = true;
 
             using (var xmlWriter = XmlWriter.Create(stringBuilder, settings))
             {
