@@ -25,6 +25,15 @@ namespace AvaloniaImporter
             {
                 element.Save(xmlWriter);
             }
+            var copyNotice = $@"
+<!-- 
+    Copyright (c) Microsoft Corporation. 
+    Licensed under the MIT license.
+    This file is auto generated, Do not make edits or they will be removed later.
+-->
+";
+
+            stringBuilder.Insert(0, copyNotice);
 
             return stringBuilder.ToString();
         }
@@ -103,13 +112,7 @@ namespace AvaloniaImporter
                 iconPaths.Add(entry.Key, finalDG);
             }
 
-            var outXml = new StringBuilder($@"
-            <!-- 
-            Copyright (c) Microsoft Corporation. 
-            Licensed under the MIT license.
-            This file is auto generated, Do not make edits or they will be removed later.
-            -->
-            <Styles xmlns=""https://github.com/avaloniaui"" xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml""><Style><Style.Resources>");
+            var outXml = new StringBuilder($@"<Styles xmlns=""https://github.com/avaloniaui"" xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml""><Style><Style.Resources>");
 
             foreach (var iconPath in iconPaths.Select(x => x.Value))
                 outXml.Append(iconPath);
