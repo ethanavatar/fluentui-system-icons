@@ -89,24 +89,21 @@ namespace AvaloniaImporter
 
                 // Get elements
                 var svgNode = xmlDoc.SelectSingleNode("/svg");
-                var width = svgNode.Attributes["width"].Value.Replace("px", string.Empty);
-                var height = svgNode.Attributes["height"].Value.Replace("px", string.Empty);
 
-                var ghostRect = $"M0,0 {width},0 {width},{height} 0,{height}";
 
-                var finalDG = $@"<DrawingGroup x:Key=""{entry.Key.Replace(' ', '_').ToLowerInvariant()}_{designator.ToLowerInvariant()}""><GeometryDrawing Brush=""#00000000"" Geometry=""{ghostRect}"" />";
+                var key = $"{entry.Key.Replace(' ', '_').ToLowerInvariant()}_{designator.ToLowerInvariant()}";
 
                 var pathNodes = xmlDoc.SelectNodes("//path");
 
+                var pathAccumulator = "";
+
                 foreach (var pathNode in pathNodes.Cast<XmlNode>())
                 {
-                    var pathData = pathNode.Attributes["d"].Value;
-                    
-                    finalDG += $@"<GeometryDrawing Brush=""#FF000000"" Geometry=""{pathData}"" />";
-
+                    var pathData = pathNode.Attributes["d"].Value + " ";
+                    pathAccumulator += pathData;
                 }
-
-                finalDG += $@"</DrawingGroup>";
+                
+                var finalDG = $@"<StreamGeometry x:Key=""{key}"">{pathAccumulator.Trim()}</StreamGeometry>";
 
                 iconPaths.Add(entry.Key, finalDG);
             }
