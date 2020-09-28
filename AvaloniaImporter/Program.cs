@@ -101,8 +101,7 @@ namespace AvaloniaImporter
                 foreach (var pathNode in pathNodes.Cast<XmlNode>())
                 {
                     var pathData = pathNode.Attributes["d"].Value;
-                    // var brush = pathNode.ParentNode.Attributes["fill"].Value.ToUpperInvariant();
-
+                    
                     finalDG += $@"<GeometryDrawing Brush=""#FF000000"" Geometry=""{pathData}"" />";
 
                 }
