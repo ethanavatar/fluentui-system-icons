@@ -108,12 +108,30 @@ namespace AvaloniaImporter
                 iconPaths.Add(entry.Key, finalDG);
             }
 
-            var outXml = new StringBuilder($@"<Styles xmlns=""https://github.com/avaloniaui"" xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml""><Style><Style.Resources>");
+            var outXml = new StringBuilder("");
 
+            outXml.AppendLine(@"<Styles xmlns=""https://github.com/avaloniaui""");
+            outXml.AppendLine(@"xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml"">");
+            outXml.AppendLine(@"<Design.PreviewWith>");
+
+            
+            foreach (var keyName in iconPaths.Select(x => x.Key))
+            {
+                outXml.AppendLine(@"<StackPanel Orientation=""Horizontal"">");
+                outXml.AppendLine($@"<PathIcon Data=""{{DynamicResource {keyName}}}"" />");
+                outXml.AppendLine($@"<TextBlock Margin=""10 0""  Text=""{keyName}"" />");
+                outXml.AppendLine(@"</StackPanel>");
+            }            
+            
+            outXml.AppendLine(@"</Design.PreviewWith>");
+            outXml.AppendLine(@"<Styles.Resources>");
+
+            
             foreach (var iconPath in iconPaths.Select(x => x.Value))
-                outXml.Append(iconPath);
+                outXml.AppendLine(iconPath);
 
-            outXml.Append(@"</Style.Resources></Style></Styles>");
+            outXml.AppendLine(@"</Styles.Resources>");
+            outXml.AppendLine(@"</Styles>");
 
             return PrettyXml(outXml.ToString());
         }
