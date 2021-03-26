@@ -46,9 +46,12 @@ namespace AvaloniaImporter
             File.WriteAllText("FluentUiIcons_Regular.xaml", GenerateAvaloniaFluentIcons(absSvgPath, "regular"));
 
             File.WriteAllText("FluentUiIcons_Filled.xaml", GenerateAvaloniaFluentIcons(absSvgPath, "filled"));
+            
+            File.WriteAllText("icons_avalonia.md", GenerateAvaloniaFluentIcons(absSvgPath, "regular", true));
+
         }
 
-        static string GenerateAvaloniaFluentIcons(string absSvgPath, string designator)
+        static string GenerateAvaloniaFluentIcons(string absSvgPath, string designator, bool markdownMode = false)
         {
             var svgPaths = Directory.EnumerateFiles(absSvgPath, "*.svg", new EnumerationOptions() { RecurseSubdirectories = true })
             .Where(x => x.Contains("_regular"))
@@ -56,7 +59,7 @@ namespace AvaloniaImporter
 
             var entries = new Dictionary<string, List<string>>();
             var highestResVersion = new Dictionary<string, string>();
-            var iconPaths = new Dictionary<string, string>();
+            var iconPaths = new Dictionary<string, (string path, string streamgeoxaml, string streamgeoraw)>();
 
             foreach (var entry in svgPaths.Select(x => (x.Replace(absSvgPath, string.Empty).Split('/')[1], x)))
             {
@@ -105,14 +108,42 @@ namespace AvaloniaImporter
                 
                 var finalDG = $@"<StreamGeometry x:Key=""{key}"">{pathAccumulator.Trim()}</StreamGeometry>";
 
-                iconPaths.Add(entry.Key, finalDG);
+                iconPaths.Add(entry.Key, (Path.GetRelativePath(absSvgPath + "/../", entry.Value), finalDG, pathAccumulator.Trim()));
             }
 
+
+            if (markdownMode)
+            {
+                var outMarkdown = new StringBuilder("");
+
+                outMarkdown.AppendLine(@"<!-- This file is generated using AvaloniaImporter -->");
+                outMarkdown.AppendLine(@"# Icons");
+                outMarkdown.AppendLine(@"|Name|Icon|Code|");
+
+
+                foreach (var v in iconPaths.Select(x => x))
+                {
+                    outMarkdown.Append('|');
+                    outMarkdown.Append(v.Key);
+                    outMarkdown.Append('|'); 
+                    outMarkdown.Append($"<img src=\"{v.Value.path}\"/>");
+                    outMarkdown.Append("|<code>");
+                    outMarkdown.Append(v.Value.streamgeoxaml);
+                    outMarkdown.AppendLine("</code>|");
+                }
+
+                return outMarkdown.ToString();
+
+            }
+            
             var outXml = new StringBuilder("");
 
+            
             outXml.AppendLine(@"<Styles xmlns=""https://github.com/avaloniaui""");
             outXml.AppendLine(@"xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml"">");
             outXml.AppendLine(@"<Design.PreviewWith>");
+            
+            
 
             
             foreach (var keyName in iconPaths.Select(x => x.Key))
@@ -128,7 +159,7 @@ namespace AvaloniaImporter
 
             
             foreach (var iconPath in iconPaths.Select(x => x.Value))
-                outXml.AppendLine(iconPath);
+                outXml.AppendLine(iconPath.streamgeoxaml);
 
             outXml.AppendLine(@"</Styles.Resources>");
             outXml.AppendLine(@"</Styles>");
