@@ -47,7 +47,7 @@ namespace AvaloniaImporter
 
             File.WriteAllText("FluentUiIcons_Filled.xaml", GenerateAvaloniaFluentIcons(absSvgPath, "filled"));
             
-            File.WriteAllText("icons_avalonia.md", GenerateAvaloniaFluentIcons(absSvgPath, "regular", true));
+            File.WriteAllText("icons_avalonia.html", GenerateAvaloniaFluentIcons(absSvgPath, "regular", true));
 
         }
 
@@ -115,21 +115,22 @@ namespace AvaloniaImporter
             if (markdownMode)
             {
                 var outMarkdown = new StringBuilder("");
-
-                var header = $@"---
-Title: Icons
-Order: 90
----
-
-| Key  | Icon     | Code  |
-| :---  | :----:   |  :--- |";                
-                
-                outMarkdown.AppendLine(header);
+//
+//                 var header = $@"---
+// Title: Icons
+// Order: 90
+// ---
+//
+// | Key  | Icon     | Code  |
+// | :---  | :----:   |  :--- |";                
+//                 
+//                 outMarkdown.AppendLine(header);
 
                 foreach (var v in iconPaths.Select(x => x)) // &lt; &gt;
                 {
-                    var h = $@"| {v.Key} | <img src='https://raw.githubusercontent.com/microsoft/fluentui-system-icons/master/{v.Value.path}' width='24' height='24'> |  <pre style='max-width:250px;'><code class='language-xml hljs'> {v.Value.streamgeoxaml.Replace("<","&lt;").Replace(">","&gt;")} </code></pre> |";
-                     
+                   // var h = $@"| {v.Key} | <img src='https://raw.githubusercontent.com/microsoft/fluentui-system-icons/master/{v.Value.path}' width='24' height='24'> |  <pre style='max-width:250px;'><code class='language-xml hljs'> {v.Value.streamgeoxaml.Replace("<","&lt;").Replace(">","&gt;")} </code></pre> |";
+                   var h =
+                       $@"<p style=""display: inline-flex;""><img src=""https://raw.githubusercontent.com/microsoft/fluentui-system-icons/master/{v.Value.path}"" width=""24"" height=""24"">{v.Key}<div class=""language-xml highlighter-rouge"" style=""max-width: 800px;""> <div class=""highlight""> <pre class=""highlight""><code><span class=""nt"">&lt;StreamGeometry</span> <span class=""na"">x:Key=</span><span class=""s"">&quot;{v.Key}&quot;</span><span class=""nt"">&gt;</span>{v.Value.streamgeoraw}<span class=""nt"">&lt;/StreamGeometry&gt;</span></code></pre> </div> </div> </p>";
                     outMarkdown.AppendLine(h);
                 }
 
