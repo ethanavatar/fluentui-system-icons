@@ -108,7 +108,7 @@ namespace AvaloniaImporter
                 
                 var finalDG = $@"<StreamGeometry x:Key=""{key}"">{pathAccumulator.Trim()}</StreamGeometry>";
 
-                iconPaths.Add(entry.Key, (Path.GetRelativePath(absSvgPath + "/../", entry.Value), finalDG, pathAccumulator.Trim()));
+                iconPaths.Add(key, (Path.GetRelativePath(absSvgPath + "/../", entry.Value), finalDG, pathAccumulator.Trim()));
             }
 
 
@@ -116,26 +116,21 @@ namespace AvaloniaImporter
             {
                 var outMarkdown = new StringBuilder("");
 
-                // outMarkdown.AppendLine(@" This file is generated using AvaloniaImporter -->");
+                var header = $@"---
+Title: Icons
+Order: 90
+---
+
+| Key  | Icon     | Code  |
+| :---  | :----:   |  :--- |";                
                 
-                foreach (var v in iconPaths.Select(x => x))
+                outMarkdown.AppendLine(header);
+
+                foreach (var v in iconPaths.Select(x => x)) // &lt; &gt;
                 {
-                    outMarkdown.Append("##### ");
-                    outMarkdown.Append(v.Key);
-                    outMarkdown.Append(" ![img](");
-                    outMarkdown.Append("https://raw.githubusercontent.com/jmacato/fluentui-system-icons/master/");
-                    outMarkdown.Append(v.Value.path);
-                    outMarkdown.AppendLine(")");
-                    outMarkdown.AppendLine();
-                    outMarkdown.AppendLine("<details>");
-                    outMarkdown.AppendLine("<summary>Code</summary>");
-                    outMarkdown.AppendLine();
-                    outMarkdown.AppendLine("```");
-                    outMarkdown.AppendLine(v.Value.streamgeoxaml);
-                    outMarkdown.AppendLine("```");
-                    outMarkdown.AppendLine();
-                    outMarkdown.AppendLine("</details>");        
-                    outMarkdown.AppendLine();
+                    var h = $@"| {v.Key} | <img src='https://raw.githubusercontent.com/microsoft/fluentui-system-icons/master/{v.Value.path}' width='24' height='24'> |  <pre style='max-width:250px;'><code class='language-xml hljs'> {v.Value.streamgeoxaml.Replace("<","&lt;").Replace(">","&gt;")} </code></pre> |";
+                     
+                    outMarkdown.AppendLine(h);
                 }
 
                 return outMarkdown.ToString();
