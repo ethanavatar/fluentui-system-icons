@@ -116,24 +116,26 @@ namespace AvaloniaImporter
             {
                 var outMarkdown = new StringBuilder("");
 
-                outMarkdown.AppendLine(@"<!-- This file is generated using AvaloniaImporter -->");
-                outMarkdown.AppendLine(@"# Icons");
-                outMarkdown.AppendLine(@"|Name|Icon|Code|");
-
-
+                // outMarkdown.AppendLine(@" This file is generated using AvaloniaImporter -->");
+                
                 foreach (var v in iconPaths.Select(x => x))
                 {
-                    outMarkdown.Append('|');
+                    outMarkdown.Append("##### ");
                     outMarkdown.Append(v.Key);
-                    outMarkdown.Append('|'); 
-                    outMarkdown.Append("<img src=\"");
+                    outMarkdown.Append(" ![img](");
                     outMarkdown.Append("https://raw.githubusercontent.com/jmacato/fluentui-system-icons/master/");
                     outMarkdown.Append(v.Value.path);
-                    outMarkdown.Append("\" />");
-                    outMarkdown.Append("|<code>");
-
-                    outMarkdown.Append(v.Value.streamgeoxaml);
-                    outMarkdown.AppendLine("</code>|");
+                    outMarkdown.AppendLine(")");
+                    outMarkdown.AppendLine();
+                    outMarkdown.AppendLine("<details>");
+                    outMarkdown.AppendLine("<summary>Code</summary>");
+                    outMarkdown.AppendLine();
+                    outMarkdown.AppendLine("```");
+                    outMarkdown.AppendLine(v.Value.streamgeoxaml);
+                    outMarkdown.AppendLine("```");
+                    outMarkdown.AppendLine();
+                    outMarkdown.AppendLine("</details>");        
+                    outMarkdown.AppendLine();
                 }
 
                 return outMarkdown.ToString();
