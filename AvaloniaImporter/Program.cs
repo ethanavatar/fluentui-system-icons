@@ -126,14 +126,17 @@ namespace AvaloniaImporter
                     outMarkdown.Append('|');
                     outMarkdown.Append(v.Key);
                     outMarkdown.Append('|'); 
-                    outMarkdown.Append($"<img src=\"{v.Value.path}\"/>");
+                    outMarkdown.Append("<img src=\"");
+                    outMarkdown.Append("https://raw.githubusercontent.com/jmacato/fluentui-system-icons/master/");
+                    outMarkdown.Append(v.Value.path);
+                    outMarkdown.Append("\" />");
                     outMarkdown.Append("|<code>");
+
                     outMarkdown.Append(v.Value.streamgeoxaml);
                     outMarkdown.AppendLine("</code>|");
                 }
 
                 return outMarkdown.ToString();
-
             }
             
             var outXml = new StringBuilder("");
